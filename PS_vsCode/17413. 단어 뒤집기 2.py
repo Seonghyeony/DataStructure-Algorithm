@@ -24,7 +24,6 @@ for i in S:
 ans += tmp[::-1]
 print(ans)
 
-
 # S = input()
 
 # if S.find('<') == -1:
