@@ -16,8 +16,8 @@ def make_curve():
         direct = (dragon[i] + 1) % 4
 
         global end_y, end_x
-        end_y = end_y + dy[direct]
-        end_x = end_x + dx[direct]
+        end_y += dy[direct]
+        end_x += dx[direct]
         lst[end_y][end_x] = 1
 
         dragon.append(direct)
@@ -25,7 +25,8 @@ def make_curve():
 for _ in range(N):
     x, y, d, g = map(int, input().split())
 
-    dragon.clear()
+    dragon = []
+
     end_y, end_x = y, x
     lst[end_y][end_x] = 1
 
@@ -41,9 +42,6 @@ for i in range(100):
     for j in range(100):
         if lst[i][j] and lst[i+1][j] and lst[i][j+1] and lst[i+1][j+1]:
             result += 1
-
-for i in lst:
-    print(i)
 
 print(result)
 
