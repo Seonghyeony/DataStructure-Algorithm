@@ -56,7 +56,7 @@ def deque_calculate(maps):
                     maps[ny][nx] = 0
     
     # 전체 탐색했는데 인접한 수가 없는 경우
-    # 모든 수가 전부 0일 경우 avg 계산 불가능
+    # 모든 수가 전부 0일 경우 avg 계산 불가능!!!!
     if not is_adj and [i for i in chain(*maps) if i != 0]:
         avg = sum(chain(*maps)) / len([i for i in chain(*maps) if i != 0])
         for y in range(1, len(maps)):
