@@ -15,5 +15,3 @@ for test_case in range(1, 11):
 
     print(f"#{test_case} {max(lst) - min(lst)}")
         
-
-

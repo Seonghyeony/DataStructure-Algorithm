@@ -1,5 +1,4 @@
 import heapq
-import copy
 
 K, N = map(int, input().split())
 p_list = list(map(int, input().split()))

@@ -6,19 +6,18 @@
 # 이동 후 한 칸에 여러 마리의 상어가 있으면, 가장 작은 번호 빼고 다 격자 밖으로 쫓겨남(삭제).
 
 ''' 문제: 1번 상어만 격자에 남게 되기까지 몇 초가 걸리는가? '''
-
 dx = [0, -1, 1, 0, 0]
 dy = [0, 0, 0, -1, 1]
 
 n, m, k = map(int, input().split())
 
-a, shark = [], [[] for _ in range(m)]
+lst, shark = [], [[] for _ in range(m)]
 for i in range(n):
-    a.append(list(map(int, input().split())))
+    lst.append(list(map(int, input().split())))
     for j in range(n):
-        if a[i][j]:
-            shark[a[i][j]-1].extend([i, j])
-            a[i][j] = [a[i][j], k]
+        if lst[i][j]:
+            shark[lst[i][j] - 1].extend([i, j])
+            lst[i][j] = [lst[i][j], k]
 
 d = list(map(int, input().split()))
 for i in range(m):
@@ -37,7 +36,7 @@ while True:
     if ans == 1001:
         print(-1)
         break
-
+    
     check = [[0 for _ in range(n)] for _ in range(n)]
     for i in range(m):
         if shark[i] != 0:
@@ -46,41 +45,39 @@ while True:
                 ndir = dir[i][d-1][j]
                 nx, ny = x + dx[ndir], y + dy[ndir]
                 if 0 <= nx < n and 0 <= ny < n:
-                    if a[nx][ny] == 0:
+                    if lst[nx][ny] == 0:
                         flag = 1
                         break
-            
-            if flag == 0:
+            if not flag:
                 for j in range(4):
                     ndir = dir[i][d-1][j]
                     nx, ny = x + dx[ndir], y + dy[ndir]
                     if 0 <= nx < n and 0 <= ny < n:
-                        if a[nx][ny][0] == i + 1:
+                        if lst[nx][ny][0] == i + 1:
                             break
             
-            # check[nx][ny]에 이미 값이 있고 i + 1 보다 작다면 현재 상어를 없앤다.
-            # 반대의 경우에는 이미 자리잡고 있던 상어를 없앤다.
             if check[nx][ny]:
                 if check[nx][ny] < i + 1:
                     shark[i] = 0
                 else:
-                    shark[check[nx][ny]-1] = 0
+                    shark[check[nx][ny] - 1] = 0
+                    shark[i] = [nx, ny, ndir]
             else:
                 check[nx][ny] = i + 1
                 shark[i] = [nx, ny, ndir]
-
+    
     for i in range(n):
         for j in range(n):
-            if a[i][j]:
-                a[i][j][1] -= 1
-                if a[i][j][1] == 0:
-                    a[i][j] = 0
+            if lst[i][j]:
+                lst[i][j][1] -= 1
+                if lst[i][j] == 0:
+                    lst[i][j] = 0
     
     for i in range(m):
         if shark[i]:
             x, y = shark[i][0], shark[i][1]
-            a[x][y] = [i+1, k]
-    
+            lst[x][y] = [i+1, k]
+
     if shark.count(0) == m-1:
         print(ans)
         break
@@ -89,17 +86,10 @@ while True:
 
 
 
-# for i in a:
-#     print(i)
-# print()
-# for i in shark:
-#     print(i)
-# print()
-# for i in dir:
-#     print(i)
-# print()
 
-''' 내 풀이는 실패
+''' 내 풀이는 실패: 이유는 check 배열을 안쓰고 값을 변경하려 했다.
+                check 배열을 따로 하나 두면 편리하다.
+            ** 그리고 배열에 값을 대입하는 방법이 부족하다.
 
 # 1 2 3 4 : 위 아래 왼쪽 오른쪽
 dy = [0, -1, 1, 0, 0]

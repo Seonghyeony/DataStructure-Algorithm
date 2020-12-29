@@ -1,3 +1,68 @@
+import copy
+from collections import deque
+
+N, M = map(int, input().split())
+dy = [-1, 1, 0, 0]
+dx = [0, 0, 1, -1]
+board = []
+viruses = []
+queue = deque()
+K = 0
+
+def bfs(dist):
+    global result
+    infect, times = 0, 0
+    while queue:
+        y, x = queue.popleft()
+        for i in range(4):
+            ny, nx = y + dy[i], x + dx[i]
+            if 0 <= ny < N and 0 <= nx < N:
+                if board[ny][nx] != 1 and dist[ny][nx] == -1:
+                    dist[ny][nx] = dist[y][x] + 1
+                    queue.append((ny, nx))
+                    if board[ny][nx] == 0:
+                        infect += 1
+                        times = dist[ny][nx]
+    
+    if infect == K:
+        result = min(result, times)
+
+def dfs(idx, count):
+    if count == M:
+        choice = copy.deepcopy(ck)
+        dist = [[-1 for _ in range(N)] for _ in range(N)]
+        for i in range(V):
+            if choice[i]:
+                y, x = viruses[i]
+                queue.append((y, x))
+                dist[y][x] = 0
+        bfs(dist)
+        return
+    
+    for i in range(idx, V):
+        if not ck[i]:
+            ck[i] = True
+            dfs(i+1, count+1)
+            ck[i] = False
+
+for i in range(N):
+    tmp = list(map(int, input().split()))
+    for j in range(N):
+        if tmp[j] == 2:
+            viruses.append([i, j])
+        elif tmp[j] == 0:
+            K += 1
+    board.append(tmp)
+
+result = float('inf')
+V = len(viruses)
+ck = [False] * V
+dfs(0, 0)
+print(result if result != float('inf') else -1)
+
+
+
+'''
 from collections import deque
 
 n, m = map(int, input().split())
@@ -57,7 +122,7 @@ for i in range(n):
 ans = 10**9
 solve(0, 0, len(v))
 print(ans if ans != 10**9 else -1)
-
+'''
 '''
 import copy
 from itertools import combinations

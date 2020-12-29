@@ -1,3 +1,77 @@
+# 번호: 1 ~ 16
+# 빈 칸과 다른 물고기가 있는 칸으로만 이동 가능.
+# 방향이 이동할 수 있는 칸을 찾을 때까지 방향 45도 반시계 회전, 이동할 수 없으면 이동 x.
+# 서로의 위치를 바꾸는 식으로 이동.
+# 상어는 물고기가 없는 칸으로 이동 불가능.
+import copy
+
+def food(lst, y, x):
+    positions = []
+    direct = lst[y][x][1]
+    for i in range(1, 4):
+        ny, nx = y + dy[direct], x + dx[direct]
+        if 0 <= ny < 4 and 0 <= nx < 4 and 1 <= lst[ny][nx][0] <= 16:
+            positions.append([ny, nx])
+        y, x = ny, nx
+    return positions
+
+def find_fish(lst, index):
+    for i in range(4):
+        for j in range(4):
+            if lst[i][j][0] == index:
+                return (i, j)
+    return None
+
+def move_fish(lst, now_y, now_x):
+    position = []
+    for i in range(1, 17):
+        position = find_fish(lst, i)
+        if position is None:
+            continue
+        y, x = position[0], position[1]
+        direct = lst[y][x][1]  # 방향
+        for j in range(8):
+            ny, nx = y + dy[direct], x + dx[direct]
+            if 0 <= ny < 4 and 0 <= nx < 4:
+                if not (ny == now_y and nx == now_x):
+                    lst[y][x][0], lst[ny][nx][0] = lst[ny][nx][0], lst[y][x][0]
+                    lst[y][x][1], lst[ny][nx][1] = lst[ny][nx][1], direct
+                    break
+            direct = (direct + 1) % 8
+
+def dfs(lst, y, x, total):
+    global result
+    lst = copy.deepcopy(lst)
+
+    number = lst[y][x][0]
+    # 물고기를 먹는다.
+    lst[y][x][0] = -1
+    # 물고기 이동
+    move_fish(lst, y, x)
+    # 상어가 먹을 수 있는 물고기 파악
+    eat_fish = food(lst, y, x)
+
+    result = max(result, total + number)
+
+    for next_y, next_x in eat_fish:
+        dfs(lst, next_y, next_x, total + number) 
+
+
+lst = [[] for _ in range(4)]
+
+dy = [-1, -1, 0, 1, 1, 1, 0, -1]
+dx = [0, -1, -1, -1, 0, 1, 1, 1]
+
+for i in range(4):
+    tmp = list(map(int, input().split()))
+    for j in range(0, 8, 2):
+        lst[i].append([tmp[j], tmp[j+1] - 1])
+
+result = 0
+dfs(lst, 0, 0, 0)
+print(result)
+
+'''
 import copy
 
 dy = [-1, -1, 0, 1, 1, 1, 0, -1]
@@ -69,38 +143,4 @@ for i in range(4):
 answer = 0
 dfs(array, 0, 0, 0)
 print(answer)
-
-
-
 '''
-import heapq
-
-def fishSort(lst):
-    tmp = []
-    for i in range(4):
-        for j in range(4):
-            v, d = lst[i][j]
-            if v == -1:
-                continue
-            tmp.append([v, d, i, j])
-    heapq.heapify(tmp)
-    return tmp
-
-lst = [[] for _ in range(4)]
-fish = []
-
-directions = [(-1, 0), (-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1)]
-for i in range(4):
-    input_data = list(map(int, input().split()))
-    for j in range(0, 8, 2):
-        v, d = input_data[j], input_data[j+1]
-        lst[i].append([v, d])
-
-# 상어 = -1
-lst[0][0][0] = -1
-queue = fishSort(lst)
-
-'''
-
-
-

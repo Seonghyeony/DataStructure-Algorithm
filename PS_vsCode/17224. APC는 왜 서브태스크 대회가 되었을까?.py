@@ -13,7 +13,7 @@ for _ in range(1, N + 1):
 result = min(hard, K) * 140
 
 if hard < K:
-    result += min(K-hard, easy) * 100
+    result += min(K - hard, easy) * 100
 print(result)
     
     
