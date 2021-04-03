@@ -1,71 +1,108 @@
-from collections import deque
+def isPossibleConnecting(index, direct):
+    length = len(lst)
+    y, x = cores[index]
+    if direct == 0:
+        for dx in range(x + 1, length):
+            if lst[y][dx]:
+                return False
+    if direct == 1:
+        for dx in range(0, x):
+            if lst[y][dx]:
+                return False
+    if direct == 2:
+        for dy in range(y + 1, length):
+            if lst[dy][x]:
+                return False
+    if direct == 3:
+        for dy in range(0, y):
+            if lst[dy][x]:
+                return False
+    return True
 
-test_case = int(input())
+def connecting(index, direct):
+    length = len(lst)
+    y, x = cores[index]
+    cost = 0
+    if direct == 0:
+        for dx in range(x + 1, length):
+            lst[y][dx] = 2
+            cost += 1
+    if direct == 1:
+        for dx in range(0, x):
+            lst[y][dx] = 2
+            cost += 1
+    if direct == 2:
+        for dy in range(y + 1, length):
+            lst[dy][x] = 2
+            cost += 1
+    if direct == 3:
+        for dy in range(0, y):
+            lst[dy][x] = 2
+            cost += 1
+    return cost
 
-dy = [0, 0, 1, -1]
-dx = [1, -1, 0, 0]
+def disconnecting(index, direct):
+    length = len(lst)
+    y, x = cores[index]
+    if direct == 0:
+        for dx in range(x + 1, length):
+            lst[y][dx] = 0
+    if direct == 1:
+        for dx in range(0, x):
+            lst[y][dx] = 0
+    if direct == 2:
+        for dy in range(y + 1, length):
+            lst[dy][x] = 0
+    if direct == 3:
+        for dy in range(0, y):
+            lst[dy][x] = 0
 
-def isEdge(y, x):
-    if y == 0 or x == 0 or y == N - 1 or x == N - 1:
+def isConnected(index):
+    length = len(lst)
+    y, x = cores[index]
+    if y == 0 or x == 0 or y == length - 1 or x == length - 1:
         return True
     return False
 
-def minLength(y, x):
-    ret = float('inf')
-    # 동
-    flag = False
-    for dx in range(x-1, -1, -1):
-        ny, nx = y, x + dx
-        if (ny, nx) in cores:
-            flag = True
-            break
-    if not flag:
-        if x < ret:
-            ret = x
-    # 서
-    flag = False
-    for dx in range(x+1, N):
-        ny, nx = y, x + dx
-        if (ny, nx) in cores:
-            flag = True
-            break
-    if not flag:
-        if N - 1 - x < ret:
-            ret = x - 1 - x
-    # 남
-    flag = False
-    for dy in range(y+1, N):
-        ny, nx = y + dy, x
-        if (ny, nx) in cores:
-            flag = True
-            break
-    if not flag:
-        if N - 1 - y < ret:
-            ret = N - 1 - y
-    # 북
-    flag = False
-    for dy in range(y-1, -1, -1):
-        ny, nx = y + dy, x
-        if (ny, nx) in cores:
-            flag = True
-            break
-    if not flag:
-        if y < ret:
-            ret = y
+def dfs(n, connected, cost):
+    global count, result
+    if n == len(cores):
+        if connected > count:
+            count = connected
+            result = cost
+        elif connected == count:
+            result = min(result, cost)
+        return
     
-    if ret == float('inf'):
-        return 0
+    # 이미 연결되어 있으면 연결 체크 후 넘긴다.
+    if isConnected(n):
+        dfs(n + 1, connected + 1, cost)
     else:
-        return ret
+        flag = False
+        # 4 방향 체크.
+        for i in range(4):
+            # 0: 동, 1: 서, 2: 남, 3: 북
+            if isPossibleConnecting(n, i):
+                flag = True
+                connect_cost = connecting(n, i)
+                dfs(n + 1, connected + 1, cost + connect_cost)
+                disconnecting(n, i)
+        # 4방향 연결 불가능 시 그냥 넘긴다.
+        if not flag:
+            dfs(n + 1, connected, cost)
 
-for T in range(1, test_case + 1):
+T = int(input())
+lst, cores = [], []
+count, result = -1, float('inf')
+for test_case in range(1, T + 1):
     N = int(input())
     lst = [list(map(int, input().split())) for _ in range(N)]
-    cores = [(i, j) for i in range(N) for j in range(N) if lst[i][j] == 1]
-    result = 0
-    for (y, x) in cores:
-        if isEdge(y, x):
-            continue
-        result += minLength(y, x)
-    print("#{} {}".format(T, result))
+    cores = []
+    for i in range(N):
+        for j in range(N):
+            if lst[i][j]:
+                cores.append([i, j])
+    count, result = -1, float('inf')
+    dfs(0, 0, 0)
+    print('#{} {}'.format(test_case, result))
     
