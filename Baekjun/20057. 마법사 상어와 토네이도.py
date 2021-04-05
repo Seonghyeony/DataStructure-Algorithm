@@ -54,6 +54,9 @@ while True:
             result += wind
         lst[ny][nx] = 0
         y, x = ny, nx
+        # for i in lst:
+        #     print(i)
+        # print()
     queue.append(d)
     if y < 0 or x < 0:
         break
