@@ -26,11 +26,3 @@ visited[r][c] = True
 count = 1
 solve(r, c, d)
 print(count)
-
-for i in lst:
-    print(i)
-print()
-
-for i in visited:
-    print(i)
-print()
