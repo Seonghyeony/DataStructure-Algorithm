@@ -1,13 +1,9 @@
 from collections import deque
-import math
-# 격자 밖으로 나간 모래의 양
+
 dy = [0, 1, 0, -1]
 dx = [-1, 0, 1, 0]
 N = int(input())
 lst = [list(map(int, input().split())) for _ in range(N)]
-# flag = 0
-# for i in lst:
-#     flag += sum(i)
 
 ratios = [
             [[0, -2, 0.05], [-1, -1, 0.1], [1, -1, 0.1], [-1, 0, 0.07], [1, 0, 0.07], [-2, 0, 0.02], [2, 0, 0.02], [-1, 1, 0.01], [1, 1, 0.01], [0, -1]],
@@ -33,7 +29,6 @@ while True:
         if ny < 0 or nx < 0:
             y, x = ny, nx
             break
-        # sand = lst[ny][nx]
         ratio = ratios[d]
         temp = 0
         for i in range(9):
@@ -54,13 +49,9 @@ while True:
             result += wind
         lst[ny][nx] = 0
         y, x = ny, nx
-        # for i in lst:
-        #     print(i)
-        # print()
+
     queue.append(d)
     if y < 0 or x < 0:
         break
-    # if result == flag:
-    #     break
-
+    
 print(result)
