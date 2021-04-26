@@ -1,3 +1,45 @@
+def dfs(n, value):
+    global max_value, min_value
+    if n == N:
+        if max_value < value:
+            max_value = value
+        if min_value > value:
+            min_value = value
+        return
+    
+    if oper[0] > 0:
+        oper[0] -= 1
+        dfs(n+1, value + A[n])
+        oper[0] += 1
+    if oper[1] > 0:
+        oper[1] -= 1
+        dfs(n+1, value - A[n])
+        oper[1] += 1
+    if oper[2] > 0:
+        oper[2] -= 1
+        dfs(n+1, value * A[n])
+        oper[2] += 1
+    if oper[3] > 0:
+        oper[3] -= 1
+        if value < 0:
+            value = -value // A[n]
+            dfs(n+1, -value)
+        else:
+            dfs(n+1, value // A[n])
+        oper[3] += 1
+
+N = int(input())
+A = list(map(int, input().split()))
+# +, -, *, //
+oper = list(map(int, input().split()))
+max_value, min_value = float('-inf'), float('inf')
+dfs(1, A[0])
+print(max_value)
+print(min_value)
+
+
+
+'''
 def dfs(index, res):
     global maxAns, minAns
     # 계산의 끝에 도달했을 때 최댓값과 최솟값이 될 수 있는지 판단한다.
@@ -39,50 +81,4 @@ dfs(0, numArr[0])
 
 print(maxAns)
 print(minAns)
-
-'''
-def do_operation(oper, val1, val2):
-    if oper == '+':
-        return val1 + val2
-    elif oper == '-':
-        return val1 - val2
-    elif oper == '*':
-        return val1 * val2
-    else:
-        if val1 < 0:
-            val1 = abs(val1)
-            return -(val1 // val2)
-        else:
-            return val1 // val2
-
-def dfs(operators, idx, sum):
-    global result_max, result_min
-
-    if idx == n:
-        if result_max < sum:
-            result_max = sum
-        if result_min > sum:
-            result_min = sum
-        return
-    
-    for i in range(4):
-        copied_operators = copy.deepcopy(operators)
-        if copied_operators[i] > 0:
-            copied_operators[i] -= 1
-            dfs(copied_operators, idx+1, do_operation(op[i], sum, a[idx]))
-
-
-
-n = int(input())
-a = list(map(int, input().split()))
-operators = list(map(int, input().split()))
-
-op = ['+', '-', '*', '/']
-result_max = float('-inf')
-result_min = float('inf')
-
-dfs(operators, 1, a[0])
-
-print(result_max)
-print(result_min)
 '''

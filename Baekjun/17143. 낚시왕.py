@@ -3,6 +3,69 @@
 # 이때는 크기가 가장 큰 상어가 나머지 상어를 모두 잡아먹는다.
 # 낚시왕이 잡은 상어 크기의 합은?
 
+def find_shark():
+    ret = []
+    for i in range(R):
+        for j in range(C):
+            if lst[i][j] != 0:
+                ret.append([i, j])
+    return ret
+
+def move(lst):
+    sharks = find_shark()
+    if len(sharks) == 0:
+        return lst
+    temp = [[0 for _ in range(C)] for _ in range(R)]
+    for y, x in sharks:
+        s, d, z = lst[y][x]
+        ny, nx = y, x
+        for _ in range(s):
+            if 0 <= ny + dy[d] < R and 0 <= nx + dx[d] < C:
+                ny, nx = ny + dy[d], nx + dx[d]
+            else:
+                if d == 1 or d == 2:
+                    d = (d * 2) % 3
+                else:
+                    d = (d * 2 + 2) % 3 + 2
+                ny, nx = ny + dy[d], nx + dx[d]
+        if temp[ny][nx] != 0:
+            if temp[ny][nx][2] < z:
+                temp[ny][nx] = [s, d, z]
+        else:
+            temp[ny][nx] = [s, d, z]
+    return temp
+
+dy, dx = [0, -1, 1, 0, 0], [0, 0, 0, 1, -1]
+R, C, M = map(int, input().split())
+lst = [[0 for _ in range(C)] for _ in range(R)]
+for _ in range(M):
+    r, c, s, d, z = map(int, input().split())
+    r, c = r-1, c-1
+    lst[r][c] = [s, d, z]
+
+fisher = -1
+result = 0
+for _ in range(C):
+    fisher += 1
+    # 땅에서 가장 가까운 상어 잡기.
+    for i in range(R):
+        if lst[i][fisher] != 0:
+            s, d, z = lst[i][fisher]
+            result += z
+            lst[i][fisher] = 0
+            break
+    # 상어 이동.
+    lst = move(lst)
+
+print(result)
+
+
+
+
+
+
+
+'''
 def move():
     tmp = [[0 for _ in range(C)] for _ in range(R)]
     for i in range(len(sharks)):
@@ -62,7 +125,7 @@ for _ in range(C):
     lst = move()
 
 print(result)
-
+'''
 '''
 def changeDirection(d):
     if d == 0:
